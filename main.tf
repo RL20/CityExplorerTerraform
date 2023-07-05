@@ -29,3 +29,17 @@ resource "aws_launch_configuration" "cityexplorer_lc" {
     create_before_destroy = true
   }
 }
+
+# Auto Scaling Group
+resource "aws_autoscaling_group" "cityexplorer_asg" {
+  name                 = "cityexplorer_asg"
+  launch_configuration = aws_launch_configuration.cityexplorer_lc.name
+  min_size             = 1
+  max_size             = 2
+  desired_capacity     = 1
+  availability_zones = [ "${var.region}a" ]
+  lifecycle {
+    // Use the `create_before_destroy` lifecycle block to ensure the new autoscaling group is created first
+    create_before_destroy = true
+  }
+}
