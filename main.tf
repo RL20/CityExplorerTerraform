@@ -57,3 +57,37 @@ resource "aws_elb" "app_elb" {
     lb_protocol       = "http"
   }
 }
+
+# Security Group
+resource "aws_security_group" "cityexplorer_app" {
+  name        = "cityexplorer_app"
+  description = "security group for the city explorer app"
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # Gives the possibility to connect to any external source, 
+  # for example if I want to update a package for the application or download a file, 
+  # then it gives permission to download or connect anywhere ↓
+  egress {
+    from_port   = "0" #from any port 
+    to_port     = "0" #to any port
+    protocol    = "-1" # any protocol 
+    cidr_blocks = ["0.0.0.0/0"] # any url
+  }
+}
