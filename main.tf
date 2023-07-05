@@ -91,3 +91,20 @@ resource "aws_security_group" "cityexplorer_app" {
     cidr_blocks = ["0.0.0.0/0"] # any url
   }
 }
+
+# RDS
+resource "aws_db_instance" "city-explorer_db" {
+  identifier            = "city-explorer-db"
+  allocated_storage     = 20
+  engine                = "mysql"
+  engine_version        = "8.0.32"
+  instance_class        = "db.t2.micro"
+  username              = var.rds_username
+  password              = var.rds_password
+  publicly_accessible  = false
+  skip_final_snapshot = true
+  snapshot_identifier   = var.snapshot_identifier
+  tags = {
+    "name" = "city-explorer-db"
+  }
+} 
