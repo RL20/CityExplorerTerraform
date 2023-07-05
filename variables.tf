@@ -14,10 +14,6 @@ variable "api_key" {
   description = "API Key for the weather api"
   sensitive = true
 }
-# variable "iam" {
-#   description = "iam user"
-#   sensitive = true
-# }
 
 variable "snapshot_identifier" {
   description = "RDS snapshot"
