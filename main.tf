@@ -43,3 +43,17 @@ resource "aws_autoscaling_group" "cityexplorer_asg" {
     create_before_destroy = true
   }
 }
+
+# Load Balancer
+resource "aws_elb" "app_elb" {
+  name               = "app-elb"
+  security_groups    = [aws_security_group.cityexplorer_app.id]
+  availability_zones = ["us-west-2a", "us-west-2b"] # Replace with your desired availability zones
+
+  listener {
+    instance_port     = 5000
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+}
