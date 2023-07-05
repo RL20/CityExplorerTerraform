@@ -1,0 +1,23 @@
+
+# SSH Key
+keypair_name = "YOUR_SSH_KEY_NAME"
+
+# API Key for your appliction  API
+api_key = "YOUR_API_KEY"
+
+# RDS snapshot
+snapshot_identifier = "YOUR_RDS_SNAPSHOT"
+
+# RDS username
+rds_username = "YOUR_DB_ADMIN_NAME"
+
+# RDS password
+rds_password = "YOUR_DB_ADMIN_PASSWORD"
+
+# ------------------------------------------------------------------------
+# COMMENTS :
+# ↑↑↑ you should create `terraform.tfvars` file with the above values  ↑↑↑
+# here RDS snapshot for example : arn:aws:rds:us-west-2:000000000000:snapshot:basesnapshot
+# the name of the snapshot is :basesnapshot
+# the region is :us-west-2 
+#--------------------------------------------------------------------------
