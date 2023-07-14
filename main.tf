@@ -37,7 +37,8 @@ resource "aws_autoscaling_group" "cityexplorer_asg" {
   min_size             = 1
   max_size             = 2
   desired_capacity     = 1
-  availability_zones = [ "${var.region}a" ]
+  availability_zones = [ "${var.region}a" ] 
+  load_balancers = [ aws_elb.app_elb.id ]# tell the aws_autoscaling_group to registered every instance it create to the load balancer
   lifecycle {
     // Use the `create_before_destroy` lifecycle block to ensure the new autoscaling group is created first
     create_before_destroy = true
@@ -47,8 +48,16 @@ resource "aws_autoscaling_group" "cityexplorer_asg" {
 # Load Balancer
 resource "aws_elb" "app_elb" {
   name               = "app-elb"
-  security_groups    = [aws_security_group.cityexplorer_app.id]
+  security_groups    = [aws_security_group.load_blancer_SG.id]
   availability_zones = ["us-west-2a", "us-west-2b"] # Replace with your desired availability zones
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    interval            = 30
+    target              = "HTTP:5000/health" # Check if the instance is online at /health
+  }
 
   listener {
     instance_port     = 5000
@@ -84,6 +93,23 @@ resource "aws_security_group" "cityexplorer_app" {
   # Gives the possibility to connect to any external source, 
   # for example if I want to update a package for the application or download a file, 
   # then it gives permission to download or connect anywhere ↓
+  egress {
+    from_port   = "0" #from any port 
+    to_port     = "0" #to any port
+    protocol    = "-1" # any protocol 
+    cidr_blocks = ["0.0.0.0/0"] # any url
+  }
+}
+resource "aws_security_group" "load_blancer_SG" {
+  name        = "load_blancer_SG"
+  description = "security group for the city explorer app"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = "0" #from any port 
     to_port     = "0" #to any port
